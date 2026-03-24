@@ -1,44 +1,43 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import { StyleSheet, FlatList } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { useEffect, useState } from 'react';
+import { getPosts } from './src/services/api';
+import ItemCard from './src/components/ItemCard/ItemCard';
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+type Post = {
+  id: number;
+  title: string;
+  body: string;
+};
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+  const [data, setData] = useState<Post[]>([]);
+  //calling API function
+  useEffect(() => {
+    getPosts()
+      .then(data => setData(data)) //
+      .catch(err => console.log(err));
+  }, []);
 
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
+      <SafeAreaView style={styles.container}>
+        <FlatList
+          data={data}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item }) => (
+            <ItemCard id={item.id} title={item.title} body={item.body} />
+          )}
+        />
+      </SafeAreaView>
     </SafeAreaProvider>
-  );
-}
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 10,
   },
 });
 
