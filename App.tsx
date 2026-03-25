@@ -9,7 +9,7 @@ import {
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
 
-import { getPosts, createPost } from './src/services/api';
+import { getPosts, createPost, deletePost } from './src/services/api';
 
 import FloatingButton from './src/components/FloatingButton/FloatingButton';
 import CustomModel from './src/components/CustomModel/CustomModel';
@@ -72,6 +72,11 @@ function App() {
     } catch {}
   };
 
+  const deleteData = async (id: number) => {
+    await deletePost(id); //  call the API function
+    setData(prev => prev.filter(post => post.id !== id)); // update local state
+  };
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
@@ -84,7 +89,7 @@ function App() {
                 id={item.id}
                 title={item.title}
                 body={item.body}
-                onDelete={() => Alert.alert('Do you wanna delete it bud?')}
+                onDelete={() => deleteData(item.id)}
               />
             </TouchableOpacity>
           )}
