@@ -1,9 +1,12 @@
-import { StyleSheet, FlatList, ToastAndroid } from 'react-native';
+import { StyleSheet, FlatList } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
-import { getPosts } from './src/services/api';
-import ItemCard from './src/components/ItemCard/ItemCard';
+
+import { getPosts, createPost } from './src/services/api';
+
 import FloatingButton from './src/components/FloatingButton/FloatingButton';
+import CustomModel from './src/components/CustomModel/CustomModel';
+import ItemCard from './src/components/ItemCard/ItemCard';
 
 type Post = {
   id: number;
@@ -12,13 +15,32 @@ type Post = {
 };
 
 function App() {
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
   const [data, setData] = useState<Post[]>([]);
-  //calling API function
+  const [modalVisible, setModalVisible] = useState(false);
+
+  // GET posts
   useEffect(() => {
-    getPosts()
-      .then(data => setData(data)) //
-      .catch(err => console.log(err));
+    const fetchPosts = async () => {
+      const res = await getPosts();
+      setData(res);
+    };
+    fetchPosts();
   }, []);
+
+  // CREATE post
+  const postData = async () => {
+    try {
+      const res = await createPost({ title, body });
+      setData(prev => [...prev, res]);
+      setTitle('');
+      setBody('');
+      setModalVisible(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <SafeAreaProvider>
@@ -30,8 +52,17 @@ function App() {
             <ItemCard id={item.id} title={item.title} body={item.body} />
           )}
         />
-        <FloatingButton
-          onPress={() => ToastAndroid.show('Hola', ToastAndroid.LONG)}
+
+        <FloatingButton onPress={() => setModalVisible(true)} />
+
+        <CustomModel
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          onAdd={postData}
+          title={title}
+          body={body}
+          setTitle={setTitle}
+          setBody={setBody}
         />
       </SafeAreaView>
     </SafeAreaProvider>

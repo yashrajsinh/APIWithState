@@ -1,4 +1,20 @@
+const BASE_URL = 'https://jsonplaceholder.typicode.com/posts';
+
+// GET
 export const getPosts = async () => {
-  const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+  const response = await fetch(BASE_URL);
+  return response.json();
+};
+
+// CREATE
+export const createPost = async (data: { title: string; body: string }) => {
+  const response = await fetch(BASE_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
   return response.json();
 };
