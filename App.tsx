@@ -1,4 +1,9 @@
-import { StyleSheet, FlatList } from 'react-native';
+import {
+  StyleSheet,
+  FlatList,
+  ToastAndroid,
+  TouchableOpacity,
+} from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
 
@@ -20,7 +25,7 @@ function App() {
   const [data, setData] = useState<Post[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
 
-  // GET posts
+  // GET posts laod in flatlist later
   useEffect(() => {
     const fetchPosts = async () => {
       const res = await getPosts();
@@ -42,6 +47,13 @@ function App() {
     }
   };
 
+  //edit post
+  const editData = async (item: Post) => {
+    try {
+      ToastAndroid.show(JSON.stringify(item), ToastAndroid.LONG);
+    } catch {}
+  };
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
@@ -49,7 +61,9 @@ function App() {
           data={data}
           keyExtractor={item => item.id.toString()}
           renderItem={({ item }) => (
-            <ItemCard id={item.id} title={item.title} body={item.body} />
+            <TouchableOpacity onPress={() => editData(item)}>
+              <ItemCard id={item.id} title={item.title} body={item.body} />
+            </TouchableOpacity>
           )}
         />
 
