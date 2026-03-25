@@ -10,10 +10,12 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
 
 import { getPosts, createPost, deletePost } from './src/services/api';
-
+//Componenets
 import FloatingButton from './src/components/FloatingButton/FloatingButton';
 import CustomModel from './src/components/CustomModel/CustomModel';
 import ItemCard from './src/components/ItemCard/ItemCard';
+//Edit model
+import UpdateModel from './src/components/UpdateModel/UpdateModel';
 
 type Post = {
   id: number;
@@ -21,27 +23,14 @@ type Post = {
   body: string;
 };
 
-function RightActions({ onDelete }: any) {
-  return (
-    <TouchableOpacity
-      onPress={onDelete}
-      style={{
-        backgroundColor: 'red',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: 80,
-      }}
-    >
-      <Text style={{ color: 'white' }}>Delete</Text>
-    </TouchableOpacity>
-  );
-}
-
 function App() {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [data, setData] = useState<Post[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [updateModel, setUpdateModel] = useState(false);
+  const [updateTitle, setupdateTitle] = useState('');
+  const [updateBody, setupdateBody] = useState('');
 
   // GET posts laod in flatlist later
   useEffect(() => {
@@ -67,11 +56,13 @@ function App() {
 
   //edit post
   const editData = async (item: Post) => {
-    try {
-      ToastAndroid.show(JSON.stringify(item), ToastAndroid.LONG);
-    } catch {}
+    setUpdateModel(!updateModel);
+    const id = item.id;
+    setupdateTitle(item.title);
+    setupdateBody(item.body);
   };
 
+  //Delete post
   const deleteData = async (id: number) => {
     await deletePost(id); //  call the API function
     setData(prev => prev.filter(post => post.id !== id)); // update local state
@@ -105,6 +96,13 @@ function App() {
           body={body}
           setTitle={setTitle}
           setBody={setBody}
+        />
+
+        <UpdateModel
+          visible={updateModel}
+          placeholderTitle={updateTitle}
+          placeholderBody={updateBody}
+          onCancel={() => setUpdateModel(!updateModel)}
         />
       </SafeAreaView>
     </SafeAreaProvider>
