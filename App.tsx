@@ -3,6 +3,8 @@ import {
   FlatList,
   ToastAndroid,
   TouchableOpacity,
+  Text,
+  Alert,
 } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
@@ -18,6 +20,22 @@ type Post = {
   title: string;
   body: string;
 };
+
+function RightActions({ onDelete }: any) {
+  return (
+    <TouchableOpacity
+      onPress={onDelete}
+      style={{
+        backgroundColor: 'red',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 80,
+      }}
+    >
+      <Text style={{ color: 'white' }}>Delete</Text>
+    </TouchableOpacity>
+  );
+}
 
 function App() {
   const [title, setTitle] = useState('');
@@ -62,7 +80,12 @@ function App() {
           keyExtractor={item => item.id.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => editData(item)}>
-              <ItemCard id={item.id} title={item.title} body={item.body} />
+              <ItemCard
+                id={item.id}
+                title={item.title}
+                body={item.body}
+                onDelete={() => Alert.alert('Do you wanna delete it bud?')}
+              />
             </TouchableOpacity>
           )}
         />
@@ -86,7 +109,7 @@ function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    padding: 12,
   },
 });
 

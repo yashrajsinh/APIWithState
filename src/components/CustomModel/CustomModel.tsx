@@ -20,7 +20,7 @@ type Props = {
 
 export default function CustomModel(props: Props) {
   return (
-    <Modal transparent visible={props.visible} animationType="slide">
+    <Modal transparent visible={props.visible} animationType="fade">
       <View style={styles.overlay}>
         <View style={styles.modalContainer}>
           <Text style={styles.title}>Enter Details</Text>
