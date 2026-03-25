@@ -18,3 +18,10 @@ export const createPost = async (data: { title: string; body: string }) => {
 
   return response.json();
 };
+//delete entry
+export const deletePost = async (id: number) => {
+  try {
+    //remove entry
+    await fetch(`${BASE_URL}/${id}`, { method: 'DELETE' });
+  } catch {}
+};
