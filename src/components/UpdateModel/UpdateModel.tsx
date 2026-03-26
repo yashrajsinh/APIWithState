@@ -12,8 +12,6 @@ type Props = {
   visible: boolean;
   placeholderTitle: string;
   placeholderBody: string;
-  title: string;
-  body: string;
   setTitle: (text: string) => void;
   setBody: (text: string) => void;
   onCancel: () => void;
@@ -29,14 +27,12 @@ export default function UpdateModel(props: Props) {
 
           <TextInput
             placeholder={props.placeholderTitle}
-            value={props.title}
             onChangeText={props.setTitle}
             style={styles.input}
           />
 
           <TextInput
             placeholder={props.placeholderBody}
-            value={props.body}
             onChangeText={props.setBody}
             style={styles.input}
           />

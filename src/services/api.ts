@@ -25,3 +25,14 @@ export const deletePost = async (id: number) => {
     await fetch(`${BASE_URL}/${id}`, { method: 'DELETE' });
   } catch {}
 };
+//update entry
+export const updatePost = async (id: number, updatedData: any) => {
+  try {
+    const res = await fetch(`${BASE_URL}/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedData),
+    });
+    return await res.json();
+  } catch {}
+};
