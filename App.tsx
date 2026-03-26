@@ -1,15 +1,13 @@
-import {
-  StyleSheet,
-  FlatList,
-  ToastAndroid,
-  TouchableOpacity,
-  Text,
-  Alert,
-} from 'react-native';
+import { StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
 
-import { getPosts, createPost, deletePost } from './src/services/api';
+import {
+  getPosts,
+  createPost,
+  deletePost,
+  updatePost,
+} from './src/services/api';
 //Componenets
 import FloatingButton from './src/components/FloatingButton/FloatingButton';
 import CustomModel from './src/components/CustomModel/CustomModel';
@@ -31,6 +29,7 @@ function App() {
   const [updateModel, setUpdateModel] = useState(false);
   const [updateTitle, setupdateTitle] = useState('');
   const [updateBody, setupdateBody] = useState('');
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   // GET posts laod in flatlist later
   useEffect(() => {
@@ -55,13 +54,36 @@ function App() {
   };
 
   //edit post
-  const editData = async (item: Post) => {
-    setUpdateModel(!updateModel);
-    const id = item.id;
+  const editData = (item: Post) => {
+    setSelectedId(item.id);
+    setUpdateModel(true);
     setupdateTitle(item.title);
     setupdateBody(item.body);
   };
+  //Update handle
+  const handleUpdate = async () => {
+    if (selectedId === null) return;
 
+    try {
+      await updatePost(selectedId, {
+        title: updateTitle,
+        body: updateBody,
+      });
+
+      // update UI
+      setData(prev =>
+        prev.map(post =>
+          post.id === selectedId
+            ? { ...post, title: updateTitle, body: updateBody }
+            : post,
+        ),
+      );
+
+      setUpdateModel(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
   //Delete post
   const deleteData = async (id: number) => {
     await deletePost(id); //  call the API function
@@ -97,12 +119,14 @@ function App() {
           setTitle={setTitle}
           setBody={setBody}
         />
-
         <UpdateModel
           visible={updateModel}
+          setTitle={setupdateTitle}
+          setBody={setupdateBody}
           placeholderTitle={updateTitle}
           placeholderBody={updateBody}
-          onCancel={() => setUpdateModel(!updateModel)}
+          onCancel={() => setUpdateModel(false)}
+          onConfirm={handleUpdate}
         />
       </SafeAreaView>
     </SafeAreaProvider>
