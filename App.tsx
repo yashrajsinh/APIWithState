@@ -22,10 +22,13 @@ type Post = {
 };
 
 function App() {
+  //vars for adding new entry
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
-  const [data, setData] = useState<Post[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
+  //API response var
+  const [data, setData] = useState<Post[]>([]);
+  //update entry model vars
   const [updateModel, setUpdateModel] = useState(false);
   const [updateTitle, setupdateTitle] = useState('');
   const [updateBody, setupdateBody] = useState('');
